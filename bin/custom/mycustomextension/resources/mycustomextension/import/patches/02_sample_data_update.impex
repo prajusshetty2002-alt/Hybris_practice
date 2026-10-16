@@ -1,0 +1,2 @@
+INSERT_UPDATE SingleCodeCoupon;couponId[unique=true];name;active[default=true];maxTotalRedemptions
+                              ;PATCHTEST2026;Patch Framework Test Coupon;true;1

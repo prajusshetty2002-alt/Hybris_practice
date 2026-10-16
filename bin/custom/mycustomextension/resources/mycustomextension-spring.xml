@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!--
+	The hybris platform provides one single Spring application context for beans located at the jalo layer.
+	Each extension can add beans to this context by specifying them at this configuration file.
+	 
+	You can use and/or redefine beans defined at configuration files of other extensions as well as
+	adding new one.
+		
+	If you want to locate this file at a different location or want to use several files for better,
+	structuring, please use the '<yourextension>.application-context' property at your project.properties file.
+	There you can specify a comma separated list of files where first is tried to find a file per classpath and
+	then per file system.
+
+	
+	If you want to configure beans for your web module please have a look at
+	your web/webroot/WEB-INF/<extname>-web-spring.xml.
+	-->
+	
+	<!--  Example how to override a manager -->
+	<!--
+	<bean id="core.productManager"   class="com.mycompany.mycustomextension.jalo.MycustomextensionProductManager" 	init-method="init"	destroy-method="destroy" />
+	-->
+	
+	
+ 	<!--  Example how to configure the class to use for jalo session creation -->
+	<!--
+	<bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
+		<property name="targetClassName" value="com.mycompany.mycustomextension.jalo.MycustomextensionJaloSession"/>
+	</bean>
+	-->
+
+	
+	<!--  Example how to override an item  -->
+	<!-- 
+	<bean id="de.hybris.platform.jalo.product.Product" class="com.mycompany.mycustomextension.jalo.MycustomextensionProduct" scope="prototype" />		
+ 	-->
+
+	<!--  
+	 Example how to register and use an AOP aspect 
+     Also see http://static.springframework.org/spring/docs/2.5.x/reference/aop.html	
+     -->
+	
+	<!-- 
+	<bean id="mycustomextensionProfBean" class="com.mycompany.mycustomextension.aop.MycustomextensionProfilingAspect"/>
+	<aop:config proxy-target-class="true">
+  		<aop:aspect id="mycustomextensionProfAspect" ref="mycustomextensionProfBean" >
+    	  <aop:pointcut id="profiledMethods" 
+	      	expression="execution(* getModificationTime(..))" />  	            
+	   		<aop:around pointcut-ref="profiledMethods" method="profile" />
+  		</aop:aspect>
+	</aop:config>
+	 -->
+
+	
+	<!-- some other examples of a pointcut that matches everything:
+
+    	  <aop:pointcut id="profiledMethods" 
+	      	expression="bean(de.hybris.platform.jalo.user.Customer) &amp;&amp; 
+	      	            !execution(* getPK(..))" />  	            
+	       <aop:pointcut id="profiledMethods" expression="execution(* *(..))" />	
+	  -->
+	
+
+
+    <bean id="mycustomextensionService" class="com.mycompany.mycustomextension.service.impl.DefaultMycustomextensionService">
+        <!-- setter injection example -->
+        <property name="modelService" ref="modelService"/>
+        <property name="mediaService" ref="mediaService"/>
+        <property name="flexibleSearchService" ref="flexibleSearchService"/>
+    </bean>
+	<bean id="productSearchDao"
+      class="com.mycompany.mycustomextension.dao.impl.DefaultProductSearchDao">
+</bean>
+
+<bean id="productSearchService"
+      class="com.mycompany.mycustomextension.service.impl.DefaultProductSearchService">
+    <property name="productSearchDao" ref="productSearchDao"/>
+</bean>
+
+    <bean id="myCustomProductSearchFacade"
+          class="com.mycompany.mycustomextension.facade.impl.DefaultProductSearchFacade">
+        <property name="productSearchService" ref="productSearchService"/>
+    </bean>
+
+
+    <bean id="prepareAddToCartEmailAction"
+          class="com.mycompany.mycustomextension.process.actions.PrepareAddToCartEmailAction"
+          parent="abstractAction"/>
+
+<!--        <bean id="addToCartEmailHook"-->
+<!--              class="com.mycompany.mycustomextension.hooks.AddToCartEmailHook">-->
+
+<!--            <property name="businessProcessService"-->
+<!--                      ref="businessProcessService"/>-->
+
+<!--            <property name="modelService"-->
+<!--                      ref="modelService"/>-->
+
+<!--        </bean>-->
+
+
+<!--        &lt;!&ndash; Add our hook to SAP Commerce's existing hook list &ndash;&gt;-->
+
+<!--        <bean id="addToCartEmailHookMergeDirective"-->
+<!--              depends-on="commerceAddToCartMethodHooks"-->
+<!--              parent="listMergeDirective">-->
+
+<!--            <property name="add"-->
+<!--                      ref="addToCartEmailHook"/>-->
+
+<!--        </bean>-->
+
+
+<!--        &lt;!&ndash; ===================================================== &ndash;&gt;-->
+        <!-- EMAIL CONTEXT                                         -->
+        <!-- ===================================================== -->
+
+        <bean id="addToCartEmailContext"
+              class="com.mycompany.mycustomextension.process.email.AddToCartEmailContext"
+              parent="abstractEmailContext"
+              scope="prototype"/>
+
+
+        <!-- ===================================================== -->
+        <!-- GENERATE EMAIL ACTION                                  -->
+        <!-- ===================================================== -->
+
+        <bean id="generateAddToCartEmail"
+              parent="abstractGenerateEmailAction">
+
+            <property name="frontendTemplateName"
+                      value="AddToCartEmailTemplate"/>
+
+        </bean>
+
+
+        <!-- ===================================================== -->
+        <!-- PROCESS DEFINITION                                    -->
+        <!-- ===================================================== -->
+
+        <bean id="addToCartEmailProcessDefinitionResource"
+              class="de.hybris.platform.processengine.definition.ProcessDefinitionResource">
+
+            <property name="resource"
+                      value="classpath:/process/add-to-cart-email-process.xml"/>
+
+        </bean>
+
+
+        <!-- ===================================================== -->
+        <!-- PROCESS CONTEXT RESOLUTION                             -->
+        <!-- ===================================================== -->
+
+        <bean id="addToCartEmailProcessContextStrategyMergeDirective"
+              depends-on="processContextResolutionStrategyMap"
+              parent="mapMergeDirective">
+
+            <property name="key">
+
+                <value type="java.lang.Class">
+                    com.mycompany.mycustomextension.model.AddToCartEmailProcessModel
+                </value>
+
+            </property>
+
+            <property name="value"
+                      ref="storeFrontProcessContextStrategy"/>
+
+
+
+        </bean>
+
+    <bean id="productRatingValueProvider"
+          class="com.mycompany.mycustomextension.search.provider.ProductRatingValueProvider"
+          parent="abstractPropertyFieldValueProvider">
+
+        <property name="fieldNameProvider" ref="solrFieldNameProvider"/>
+        <property name="customerReviewService" ref="customerReviewService"/>
+
+    </bean>
+    <bean id="customSearchResultProductPopulator"
+          class="com.mycompany.mycustomextension.search.populator.CustomSearchResultProductPopulator"/>
+
+    <bean id="customSearchResultProductPopulatorMergeDirective"
+          parent="modifyPopulatorList">
+
+        <property name="list"
+                  ref="commerceSearchResultProductConverter"/>
+
+        <property name="add"
+                  ref="customSearchResultProductPopulator"/>
+
+    </bean>
+
+    <bean id="dailyOrderReportDao"
+          class="com.mycompany.mycustomextension.dao.impl.DefaultDailyOrderReportDao">
+
+        <property name="flexibleSearchService"
+                  ref="flexibleSearchService"/>
+
+    </bean>
+
+
+    <bean id="dailyOrderReportService"
+          class="com.mycompany.mycustomextension.service.impl.DefaultDailyOrderReportService">
+
+        <property name="dailyOrderReportDao"
+                  ref="dailyOrderReportDao"/>
+
+    </bean>
+
+    <!-- VIP USER RAO PROVIDER -->
+    <bean id="vipUserRAOProvider"
+          class="com.mycompany.mycustomextension.promotion.conditions.VIPUserRAOProvider"/>
+
+    <!-- VIP USER CONDITION TRANSLATOR -->
+    <bean id="vipUserConditionTranslator"
+          class="com.mycompany.mycustomextension.promotion.conditions.VIPUserConditionTranslator"/>
+
+    <!-- Add VIP provider to existing promotion RAO providers -->
+    <bean id="vipUserRAOProviderMergeDirective"
+          parent="mapMergeDirective"
+          depends-on="orderPromotionRaoProviders">
+
+        <property name="key"
+                  value="de.hybris.platform.core.model.order.AbstractOrderModel"/>
+
+        <property name="value">
+            <list>
+                <ref bean="vipUserRAOProvider"/>
+            </list>
+        </property>
+
+    </bean>
+    <!-- ========================================================= -->
+    <!-- PRODUCT INTERCEPTOR                                      -->
+    <!-- ========================================================= -->
+
+    <bean id="productInterceptor"
+          class="com.mycompany.mycustomextension.interceptors.ProductInterceptor"/>
+
+    <bean id="productInterceptorMapping"
+          class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+
+        <property name="interceptor"
+                  ref="productInterceptor"/>
+
+        <property name="typeCode"
+                  value="Product"/>
+
+        <property name="order"
+                  value="1000"/>
+
+    </bean>
+    <bean id="learningTagValueResolver"
+          class="com.mycompany.mycustomextension.solr.LearningTagValueResolver"/>
+    <import resource="classpath:/process/erp-order-process-spring.xml"/>
+
+    <bean id="erpOrderPlacedEventListener"
+          class="com.mycompany.mycustomextension.events.ErpOrderPlacedEventListener">
+
+        <property name="erpOrderProcessService"
+                  ref="erpOrderProcessService"/>
+
+
+
+    </bean>
+    <!-- Define your new populator bean -->
+    <bean id="customProductPopulator"
+          class="com.mycompany.mycustomextension.populator.CustomProductPopulator"/>
+
+    <!-- Add it to the standard product converter -->
+    <bean parent="modifyPopulatorList">
+        <property name="list" ref="productConverter"/>
+        <property name="add" ref="customProductPopulator"/>
+    </bean>
+    <!-- 1. Patch Beans -->
+    <bean id="patch_10_26" class="com.mycompany.mycustomextension.setup.patches.Patch_10_26"/>
+    <bean id="patch_10_27" class="com.mycompany.mycustomextension.setup.patches.Patch_10_27"/>
+
+    <!-- 2. SystemSetup Bean -->
+    <bean id="mycustomextensionSystemSetup" class="com.mycompany.mycustomextension.setup.MycustomextensionSystemSetup">
+        <constructor-arg ref="mycustomextensionService"/>
+        <property name="setupImpexService" ref="setupImpexService"/>
+        <property name="patches">
+            <list>
+                <ref bean="patch_10_26"/>
+                <ref bean="patch_10_27"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Product Details Cache -->
+    <bean id="productDetailsCache"
+          class="com.mycompany.mycustomextension.cache.ProductDetailsCache"/>
+
+    <bean id="productDetailsService"
+          class="com.mycompany.mycustomextension.cache.ProductDetailsService">
+        <property name="productDetailsCache" ref="productDetailsCache"/>
+    </bean>
+
+</beans>
+
+
+
+

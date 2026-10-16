@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process xmlns="http://www.hybris.de/xsd/processdefinition"
+         start="sendOrderToErpAction"
+         name="erpOrderProcess"
+         processClass="de.hybris.platform.orderprocessing.model.OrderProcessModel"
+         onError="error">
+
+    <action id="sendOrderToErpAction"
+            bean="sendOrderToErpAction">
+        <transition name="OK" to="waitForErpAck"/>
+        <transition name="NOK" to="error"/>
+    </action>
+
+    <wait id="waitForErpAck"
+          then="processErpAckAction"
+          prependProcessCode="false">
+        <event>${process.code}_ERP_ACK</event>
+    </wait>
+
+    <action id="processErpAckAction"
+            bean="processErpAckAction">
+        <transition name="OK" to="success"/>
+        <transition name="NOK" to="error"/>
+    </action>
+
+    <end id="error" state="ERROR"/>
+
+    <end id="success" state="SUCCEEDED"/>
+
+</process>

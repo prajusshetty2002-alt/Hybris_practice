@@ -1,0 +1,53 @@
+
+# Local SAP Commerce installation settings
+/platformhome.properties
+
+# Generated and compiled output
+/classes/
+/gensrc/
+/.classpath
+/.project
+/.settings/
+/.springBeans
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# IDE and OS files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+# IDE-specific build configuration
+/.externalToolBuilders/
+
+# IDE configuration
+/.externalToolBuilders/
+
+# Compiled web classes
+/web/classes/
+/web/webroot/WEB-INF/classes/
+
+# Downloaded libraries and build markers
+/lib/
+/web/webroot/WEB-INF/lib/
+
+# Generated build metadata
+/resources/*.build.number
+
+# Compiled Java bytecode
+*.class
+
+# Generated dependency metadata
+/lib/.lastupdate
+/web/webroot/WEB-INF/lib/.lastupdate
+
+# Generated web compilation output
+/web/classes/
+/web/webroot/WEB-INF/classes/

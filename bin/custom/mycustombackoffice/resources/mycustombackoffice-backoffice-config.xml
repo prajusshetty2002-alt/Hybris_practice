@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<config xmlns="http://www.hybris.com/cockpit/config">
+
+    <!-- ============================= -->
+    <!-- Explorer Tree                 -->
+    <!-- ============================= -->
+
+    <context component="explorer-tree"
+             merge-by="module">
+
+        <explorer-tree:explorer-tree
+                xmlns:explorer-tree="http://www.hybris.com/cockpitng/config/explorertree">
+
+            <explorer-tree:navigation-node
+                    id="projectManagement"
+                    expanded-by-default="true">
+
+                <explorer-tree:type-node
+                        id="projects"
+                        code="TKProject"
+                        expanded-by-default="true"/>
+
+            </explorer-tree:navigation-node>
+
+        </explorer-tree:explorer-tree>
+
+    </context>
+
+
+    <!-- ============================= -->
+    <!-- TKProject List View           -->
+    <!-- ============================= -->
+
+    <context type="TKProject"
+             component="listview"
+             merge-by="type"
+             module="mycustombackoffice">
+
+        <list-view:list-view
+                xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+
+            <list-view:column
+                    qualifier="projectId"
+                    label="project.id"
+                    position="1"
+                    sortable="true"/>
+
+            <list-view:column
+                    qualifier="projectName"
+                    label="project.name"
+                    position="2"
+                    sortable="true"/>
+
+            <list-view:column
+                    qualifier="industry"
+                    label="project.industry"
+                    position="3"
+                    sortable="true"/>
+
+            <list-view:column
+                    qualifier="status"
+                    label="project.status"
+                    position="4"
+                    sortable="true"/>
+
+            <list-view:column
+                    qualifier="startDate"
+                    label="project.startDate"
+                    position="5"
+                    sortable="true"/>
+
+            <list-view:column
+                    qualifier="endDate"
+                    label="project.endDate"
+                    position="6"
+                    sortable="true"/>
+
+        </list-view:list-view>
+
+    </context>
+
+
+    <!-- ============================= -->
+    <!-- TKProject Base Configuration  -->
+    <!-- ============================= -->
+
+    <context type="TKProject"
+             component="base"
+             merge-by="type"
+             module="mycustombackoffice">
+
+        <y:base xmlns:y="http://www.hybris.com/cockpit/config/hybris">
+
+            <y:labels>
+                <y:label>projectName</y:label>
+            </y:labels>
+
+        </y:base>
+
+    </context>
+
+
+    <!-- ============================= -->
+    <!-- TKProject Editor Area         -->
+    <!-- ============================= -->
+
+    <context type="TKProject"
+             component="editor-area"
+             merge-by="type"
+             module="mycustombackoffice">
+
+        <editorArea:editorArea
+                xmlns:editorArea="http://www.hybris.com/cockpitng/component/editorArea"
+                name="Default">
+
+            <editorArea:tab name="project.details">
+
+                <editorArea:section name="project.information"
+                                    columns="2">
+
+                    <editorArea:attribute qualifier="projectId"/>
+
+                    <editorArea:attribute qualifier="projectName"/>
+
+                    <editorArea:attribute qualifier="industry"/>
+
+                    <editorArea:attribute qualifier="status"/>
+
+                    <editorArea:attribute qualifier="startDate"/>
+
+                    <editorArea:attribute qualifier="endDate"/>
+
+                </editorArea:section>
+
+            </editorArea:tab>
+
+        </editorArea:editorArea>
+
+    </context>
+
+    <context type="Order"
+             component="listview"
+             merge-by="type"
+             module="mycustombackoffice">
+
+        <list-view:list-view
+                xmlns:list-view="http://www.hybris.com/cockpitng/component/listView">
+
+            <list-view:column
+                    qualifier="status"
+                    position="5"/>
+
+        </list-view:list-view>
+
+
+    </context>
+    <context type="Order"
+             component="advanced-search"
+             merge-by="type"
+             module="mycustombackoffice">
+        <advanced-search:advanced-search
+                xmlns:advanced-search="http://www.hybris.com/cockpitng/config/advancedsearch">
+            <advanced-search:field-list>
+                <advanced-search:field
+                        xmlns="http://www.hybris.com/cockpitng/config/advancedsearch"
+                        name="deliveryReference"
+                        selected="true"/>
+            </advanced-search:field-list>
+        </advanced-search:advanced-search>
+    </context>
+
+
+</config>

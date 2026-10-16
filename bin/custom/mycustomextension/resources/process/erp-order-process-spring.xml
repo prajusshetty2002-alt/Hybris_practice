@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- ERP Process Definition -->
+
+    <bean id="erpOrderProcessDefinitionResource"
+          class="de.hybris.platform.processengine.definition.ProcessDefinitionResource">
+
+        <property name="resource"
+                  value="classpath:/process/erpOrderProcess.xml"/>
+
+    </bean>
+
+
+
+    <!-- Send Order -->
+
+    <bean id="sendOrderToErpAction"
+          class="com.mycompany.mycustomextension.actions.SendOrderToErpAction"
+          parent="abstractAction"/>
+
+
+    <!-- Process ERP Response -->
+
+    <bean id="processErpAckAction"
+          class="com.mycompany.mycustomextension.actions.ProcessErpAckAction"
+          parent="abstractAction">
+
+        <property name="modelService"
+                  ref="modelService"/>
+
+    </bean>
+
+
+    <!-- ERP Service -->
+
+    <bean id="erpOrderProcessService"
+          class="com.mycompany.mycustomextension.service.impl.DefaultErpOrderProcessService">
+
+        <property name="businessProcessService"
+                  ref="businessProcessService"/>
+
+        <property name="modelService"
+                  ref="modelService"/>
+
+    </bean>
+</beans>

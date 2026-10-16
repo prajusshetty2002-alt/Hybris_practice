@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+--><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
+           
+    
+    <extension abstractclassprefix="Generated" classprefix="Mycustomextension"  managername="MycustomextensionManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="mycustomextension" usemaven="true">
+
+        <requires-extension name="core"/>
+
+        
+        <!-- for more information on maven managed libraries please consult https://wiki.hybris.com/x/Nq8sDQ -->
+                               
+      
+        
+        <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
+                         
+      
+        
+        <!-- <requires-extension name="cms"/> -->
+
+
+
+
+        <requires-extension name="cms2"/>
+        <requires-extension name="commerceservices"/>
+        <requires-extension name="acceleratorservices"/>
+        <requires-extension name="commercefacades"/>
+        <requires-extension name="customerreview"/>
+        <requires-extension name="solrfacetsearch"/>
+        <requires-extension name="ruleengineservices"/>
+        <requires-extension name="promotionengineservices"/>
+
+        <coremodule generated="true" manager="com.mycompany.mycustomextension.jalo.MycustomextensionManager" packageroot="com.mycompany.mycustomextension"/>
+                      
+        
+        <webmodule jspcompile="false" webroot="/mycustomextension"/>
+                					
+	
+        
+           
+    
+    </extension>
+              
+
+
+</extensioninfo>

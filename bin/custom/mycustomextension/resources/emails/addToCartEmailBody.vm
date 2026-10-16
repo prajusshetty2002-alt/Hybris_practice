@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Added to Cart</title>
+</head>
+
+<body>
+
+    <h2>Hello ${ctx.customerName},</h2>
+
+    <p>
+        You successfully added the following product to your cart:
+    </p>
+
+    <hr>
+
+    <p>
+        <strong>Product:</strong>
+        ${ctx.productName}
+    </p>
+
+    <p>
+        <strong>Product Code:</strong>
+        ${ctx.productCode}
+    </p>
+
+    <p>
+        <strong>Quantity:</strong>
+        ${ctx.quantity}
+    </p>
+
+    <p>
+        <strong>Cart:</strong>
+        ${ctx.cartCode}
+    </p>
+
+    <hr>
+
+    <p>
+        Thank you for shopping with us.
+    </p>
+
+    <p>
+        Regards,<br>
+        My Custom Store Team
+    </p>
+
+</body>
+
+</html>

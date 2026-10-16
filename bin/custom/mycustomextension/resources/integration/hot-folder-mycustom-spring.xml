@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:file="http://www.springframework.org/schema/integration/file"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/integration
+          http://www.springframework.org/schema/integration/spring-integration.xsd
+          http://www.springframework.org/schema/integration/file
+          http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <!-- ========================================================= -->
+    <!-- 1. HOT FOLDER BASE DIRECTORY                              -->
+    <!-- ========================================================= -->
+
+    <bean id="myHotFolderBaseDirectory"
+          class="java.lang.String">
+        <constructor-arg value="#{baseDirectory}/${tenantId}/myhotfolder"/>
+    </bean>
+
+
+    <!-- ========================================================= -->
+    <!-- 2. WATCH THE HOT FOLDER                                  -->
+    <!-- ========================================================= -->
+
+    <file:inbound-channel-adapter
+            id="myHotFolderFiles"
+            directory="#{myHotFolderBaseDirectory}"
+            filename-regex="^myproduct-(.*)\.csv"
+            comparator="fileOrderComparator">
+
+        <int:poller fixed-rate="1000"/>
+
+    </file:inbound-channel-adapter>
+
+
+    <!-- ========================================================= -->
+    <!-- 3. MOVE FILE TO PROCESSING                               -->
+    <!-- ========================================================= -->
+
+    <file:outbound-gateway
+            request-channel="myHotFolderFiles"
+            reply-channel="myHotFolderProcessing"
+            directory="#{myHotFolderBaseDirectory}/processing"
+            delete-source-files="true"/>
+
+
+    <!-- ========================================================= -->
+    <!-- 4. CREATE BATCH HEADER                                    -->
+    <!-- ========================================================= -->
+
+    <int:service-activator
+            input-channel="myHotFolderProcessing"
+            output-channel="myHotFolderHeaderInit"
+            ref="myHotFolderHeaderSetupTask"
+            method="execute"/>
+
+
+    <bean id="myHotFolderHeaderSetupTask"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
+
+        <property name="catalog"
+                  value="electronicsProductCatalog"/>
+
+        <property name="storeBaseDirectory"
+                  ref="myHotFolderBaseDirectory"/>
+
+    </bean>
+
+
+    <!-- ========================================================= -->
+    <!-- 5. HEADER INIT                                            -->
+    <!-- ========================================================= -->
+
+    <int:service-activator
+            input-channel="myHotFolderHeaderInit"
+            output-channel="myHotFolderTransform"
+            ref="myHotFolderHeaderInitTask"
+            method="execute"/>
+
+
+    <bean id="myHotFolderHeaderInitTask"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderInitTask">
+
+        <property name="sequenceIdParser">
+            <bean class="de.hybris.platform.acceleratorservices.dataimport.batch.util.SequenceIdParser">
+                <property name="pattern"
+                          value="myproduct-(\d+)\.csv"/>
+            </bean>
+        </property>
+
+    </bean>
+
+
+    <!-- ========================================================= -->
+    <!-- 6. CSV → IMPEX                                           -->
+    <!-- ========================================================= -->
+
+    <int:service-activator
+            input-channel="myHotFolderTransform"
+            output-channel="myHotFolderImport"
+            ref="myHotFolderTransformerTask"
+            method="execute"/>
+
+
+    <bean id="myHotFolderTransformerTask"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.task.ImpexTransformerTask"
+          init-method="initConvertersMap">
+
+        <property name="fieldSeparator"
+                  value=","/>
+
+        <property name="encoding"
+                  value="UTF-8"/>
+
+        <property name="linesToSkip"
+                  value="1"/>
+
+        <property name="converterMap">
+            <map>
+                <entry key="myproduct"
+                       value-ref="myProductConverter"/>
+            </map>
+        </property>
+
+    </bean>
+
+
+    <!-- ========================================================= -->
+    <!-- 7. PRODUCT CONVERTER                                      -->
+    <!-- ============== =========================================== -->
+
+    <bean id="myProductConverter"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+
+        <property name="header">
+            <value>
+                INSERT_UPDATE Product;code[unique=true];name;catalogVersion(catalog(id),version)
+            </value>
+        </property>
+
+        <property name="impexRow">
+            <value>
+                ;{+0};{1};electronicsProductCatalog:Staged
+            </value>
+        </property>
+
+        <property name="type"
+                  value="Product"/>
+
+    </bean>
+
+
+</beans>

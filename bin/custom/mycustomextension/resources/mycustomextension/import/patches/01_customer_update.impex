@@ -1,0 +1,6 @@
+INSERT_UPDATE Title ; code[unique=true] ; name[lang=en]
+                    ; mr                ; Mr.
+                    ; mrs               ; Mrs.
+                    ; ms                ; Ms.
+                    ; dr                ; Dr.
+                    ; prof              ; Prof.

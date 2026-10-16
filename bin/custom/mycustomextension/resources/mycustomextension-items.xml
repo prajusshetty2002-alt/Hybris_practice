@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="items.xsd">
+
+
+    <!-- ========================================================= -->
+    <!-- ERP ORDER STATUS                                          -->
+    <!-- ========================================================= -->
+
+    <enumtypes>
+
+        <enumtype code="ErpOrderStatus"
+                  autocreate="true"
+                  generate="true">
+
+            <value code="ERP_ORDER_PROCESSING"/>
+            <value code="ERP_CONFIRMED"/>
+            <value code="ERP_REJECTED"/>
+
+        </enumtype>
+
+    </enumtypes>
+
+
+    <itemtypes>
+
+
+        <!-- ===================================================== -->
+        <!-- Welcome Paragraph Component                            -->
+        <!-- ===================================================== -->
+
+        <itemtype code="WelcomeParagraphComponent"
+                  extends="CMSParagraphComponent"
+                  autocreate="true"
+                  generate="true">
+
+            <attributes>
+
+                <attribute qualifier="message"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                </attribute>
+
+            </attributes>
+
+        </itemtype>
+
+
+        <!-- ===================================================== -->
+        <!-- Add To Cart Email Process                              -->
+        <!-- ===================================================== -->
+
+        <itemtype code="AddToCartEmailProcess"
+                  extends="StoreFrontCustomerProcess"
+                  autocreate="true"
+                  generate="true">
+
+            <attributes>
+
+                <attribute qualifier="cart"
+                           type="Cart">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="product"
+                           type="Product">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"/>
+
+                </attribute>
+
+            </attributes>
+
+        </itemtype>
+
+
+        <!-- ===================================================== -->
+        <!-- Daily Order Report CronJob                             -->
+        <!-- ===================================================== -->
+
+        <itemtype code="DailyOrderReportCronJob"
+                  extends="CronJob"
+                  autocreate="true"
+                  generate="true">
+
+            <attributes>
+
+                <attribute qualifier="recipientEmail"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="false"
+                               initial="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="outputDirectory"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="false"
+                               initial="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+            </attributes>
+
+        </itemtype>
+
+
+        <!-- ===================================================== -->
+        <!-- TK Project                                             -->
+        <!-- ===================================================== -->
+
+        <itemtype code="TKProject"
+                  autocreate="true"
+                  generate="true">
+
+            <deployment table="TKProject"
+                        typecode="10102"/>
+
+            <attributes>
+
+                <attribute qualifier="projectId"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="false"
+                               unique="true"
+                               initial="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="projectName"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="false"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="industry"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="status"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="startDate"
+                           type="java.util.Date">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <attribute qualifier="endDate"
+                           type="java.util.Date">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+            </attributes>
+
+        </itemtype>
+
+
+        <!-- ===================================================== -->
+        <!-- Product Custom Attribute                               -->
+        <!-- ===================================================== -->
+
+        <itemtype code="Product"
+                  autocreate="false"
+                  generate="false">
+
+            <attributes>
+
+                <attribute qualifier="learningTag"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"/>
+
+                </attribute>
+
+            </attributes>
+
+        </itemtype>
+
+
+        <!-- ===================================================== -->
+        <!-- ERP Fields on Order                                    -->
+        <!-- ===================================================== -->
+
+        <itemtype code="AbstractOrder"
+                  autocreate="false"
+                  generate="false">
+
+            <attributes>
+
+
+                <!-- ERP processing status -->
+
+                <attribute qualifier="erpOrderStatus"
+                           type="ErpOrderStatus">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+                <!-- Response received from ERP -->
+
+                <attribute qualifier="erpResponseCode"
+                           type="java.lang.String">
+
+                    <persistence type="property"/>
+
+                    <modifiers optional="true"
+                               read="true"
+                               write="true"
+                               search="true"/>
+
+                </attribute>
+
+
+            </attributes>
+
+        </itemtype>
+        <itemtype code="Product" autocreate="false" generate="false">
+            <attributes>
+                <attribute qualifier="warrantyPeriod" type="java.lang.String">
+                    <persistence type="property"/>
+                    <modifiers optional="true"/>
+                </attribute>
+            </attributes>
+        </itemtype>
+
+
+    </itemtypes>
+
+
+</items>

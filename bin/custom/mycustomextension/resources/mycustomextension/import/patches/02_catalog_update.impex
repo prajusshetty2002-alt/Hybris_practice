@@ -1,0 +1,3 @@
+INSERT_UPDATE UserGroup ; uid[unique=true]   ; locname[lang=en]     ; description
+                        ; vipcustomersgroup  ; VIP Customers Group  ; "Special pricing tier group"
+                        ; betaTestersGroup   ; Beta Testers Group   ; "Early feature access group"

@@ -1,0 +1,2 @@
+INSERT_UPDATE Customer;uid[unique=true];groups(uid)[mode=append]
+                      ;prjwal.test@example.com;customergroup

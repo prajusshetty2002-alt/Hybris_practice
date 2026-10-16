@@ -1,0 +1,11 @@
+#Ant properties
+#Tue Feb 03 23:34:08 CET 2026
+builddate=20260203 2333
+description=mycustomwebservices
+group.id=de.hybris.platform
+module.name=platform-module
+name=mycustomwebservices
+releasedate=20250604 0846
+vendor=hybris
+version=2211.49
+version.api=2211
