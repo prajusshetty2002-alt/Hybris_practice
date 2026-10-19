@@ -71,9 +71,5 @@ public class ProductDetailsService
         LOG.info("PRODUCT DETAILS CACHE INVALIDATED: " + key);
     }
 
-    public void setProductDetailsCache(
-            final ProductDetailsCache productDetailsCache)
-    {
-        this.productDetailsCache = productDetailsCache;
-    }
+
 }
