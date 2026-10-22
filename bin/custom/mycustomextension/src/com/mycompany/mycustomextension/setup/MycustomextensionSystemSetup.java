@@ -100,8 +100,8 @@ public class MycustomextensionSystemSetup extends AbstractSystemSetup
 
                 final SystemSetupParameter param = new SystemSetupParameter("patch_" + patch.getPatchId());
                 param.setLabel("Patch " + patch.getPatchId());
-                param.addValue("yes", !isLatest);
-                param.addValue("no", isLatest);
+                param.addValue("yes",isLatest);
+                param.addValue("no", !isLatest);
 
                 params.add(param);
             }
